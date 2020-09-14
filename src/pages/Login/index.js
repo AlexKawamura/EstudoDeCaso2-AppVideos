@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
 import firebase from 'firebase';
 
 import FormRow from '../../components/FormRow';
@@ -42,16 +42,40 @@ export default class Login extends React.Component {
 
     const { email, password } = this.state;
 
+    const loginUserSuccess = user => {
+      this.setState({ message: 'Sucesso!' });
+    };
+
+    const loginUserFail = error => {
+      this.setState({ message: this.getMessageByError(error.code) });
+    };
+
     firebase.auth()
-      .signInWithEmailAndPassword(
-        email,
-        password
-      ).then(user => {
-        this.setState({ message: 'Login realizado com sucesso!' });
-        // console.log('OK! Logado!', user);
-      }).catch(error => {
-        this.setState({ message: this.getMessageByError(error.code) });
-        // console.log('ERRO! ', error);
+      .signInWithEmailAndPassword(email, password)
+      .then(loginUserSuccess)
+      .catch(error => {
+        if (error.code === 'auth/user-not-found') {
+          Alert.alert(
+            'Usuário não encontrado',
+            'Deseja criar um novo usuário?',
+            [{
+              text: 'Não',
+              onPress: () => {
+                console.log('Usuário não quis criar nova conta');
+              },
+            }, {
+              text: 'Sim',
+              onPress: () => {
+                firebase.auth()
+                  .createUserWithEmailAndPassword(email, password)
+                  .then(loginUserSuccess)
+                  .catch(loginUserFail);
+              },
+            }],
+            { cancelable: true }
+          );
+        }
+        loginUserFail;
       }).then(() => {
         this.setState({ isLoading: false });
       });
@@ -97,7 +121,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <FormRow>
           <TextInput
             style={styles.textInput}
@@ -130,6 +154,11 @@ export default class Login extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   textInput: {
     borderWidth: 1,
     borderColor: 'gray',
