@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
+import userReducers from './userReducer';
 
 export default combineReducers({
-  qualquer: (state = [], action) => state,
+  user: userReducers,
 });
