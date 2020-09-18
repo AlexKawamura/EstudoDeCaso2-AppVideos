@@ -121,7 +121,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <FormRow>
           <TextInput
             style={styles.textInput}
@@ -154,11 +154,6 @@ export default class Login extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   textInput: {
     borderWidth: 1,
     borderColor: 'gray',
