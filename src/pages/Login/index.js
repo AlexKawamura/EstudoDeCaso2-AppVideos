@@ -45,7 +45,11 @@ class Login extends React.Component {
 
     const { email, password } = this.state;
 
-    this.props.processLogin({email, password});
+    this.props.processLogin({email, password})
+    .then(() => {
+      this.setState({ message: 'Sucesso!'});
+      this.props.navigation.replace('Main');
+    });
   }
 
   getMessageByError(code) {
