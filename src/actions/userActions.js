@@ -1,6 +1,6 @@
-const USER_LOGIN = 'USER_LOGIN';
-const userLogin = user => ({
-  type: USER_LOGIN,
+const USER_LOGIN_SUCCESS = 'USER_LOGIN';
+const userLoginSuccess = user => ({
+  type: USER_LOGIN_SUCCESS,
   user,
 });
 
@@ -10,17 +10,11 @@ const userLogout = () => ({
 });
 
 export const processLogin = ({email, password}) => {
-  const loginUserSuccess = user => {
-    this.setState({ message: 'Sucesso!' });
-  };
-
-  const loginUserFail = error => {
-    this.setState({ message: this.getMessageByError(error.code) });
-  };
-
   firebase.auth()
     .signInWithEmailAndPassword(email, password)
-    .then(loginUserSuccess)
+    .then(
+
+    )
     .catch(error => {
       if (error.code === 'auth/user-not-found') {
         Alert.alert(
