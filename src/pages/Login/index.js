@@ -1,10 +1,13 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
 import firebase from 'firebase';
+import { connect } from 'react-redux';
 
 import FormRow from '../../components/FormRow';
 
-export default class Login extends React.Component {
+import { processLogin } from '../../actions';
+
+class Login extends React.Component {
   constructor(props) {
     super(props);
 
@@ -42,43 +45,7 @@ export default class Login extends React.Component {
 
     const { email, password } = this.state;
 
-    const loginUserSuccess = user => {
-      this.setState({ message: 'Sucesso!' });
-    };
-
-    const loginUserFail = error => {
-      this.setState({ message: this.getMessageByError(error.code) });
-    };
-
-    firebase.auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(loginUserSuccess)
-      .catch(error => {
-        if (error.code === 'auth/user-not-found') {
-          Alert.alert(
-            'Usuário não encontrado',
-            'Deseja criar um novo usuário?',
-            [{
-              text: 'Não',
-              onPress: () => {
-                console.log('Usuário não quis criar nova conta');
-              },
-            }, {
-              text: 'Sim',
-              onPress: () => {
-                firebase.auth()
-                  .createUserWithEmailAndPassword(email, password)
-                  .then(loginUserSuccess)
-                  .catch(loginUserFail);
-              },
-            }],
-            { cancelable: true }
-          );
-        }
-        loginUserFail;
-      }).then(() => {
-        this.setState({ isLoading: false });
-      });
+    this.props.processLogin({email, password});
   }
 
   getMessageByError(code) {
@@ -161,3 +128,5 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
 });
+
+export default connect(null, { processLogin })(Login);
