@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
 
@@ -49,6 +49,8 @@ class Login extends React.Component {
     .then(() => {
       this.setState({ message: 'Sucesso!'});
       this.props.navigation.replace('Main');
+    }).catch( error => {
+      this.setState({ message: error.code });
     });
   }
 
