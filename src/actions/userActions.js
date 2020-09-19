@@ -18,6 +18,7 @@ export const processLogin = ({email, password}) => dispatch => {
     .then( user => {
       const action = userLoginSuccess(user);
       dispatch(action);
+      return user;
     }).catch(error => {
       if (error.code === 'auth/user-not-found') {
         return new Promise((resolve, reject) => {
@@ -26,7 +27,9 @@ export const processLogin = ({email, password}) => dispatch => {
             'Deseja criar um novo usuário?',
             [{
               text: 'Não',
-              onPress: () => {},
+              onPress: () => {
+                resolve();
+              },
             }, {
               text: 'Sim',
               onPress: () => {
